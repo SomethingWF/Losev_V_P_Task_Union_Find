@@ -10,7 +10,7 @@ class DisjointSetUnionRank:
 
     def find(self, item):
         if item not in self.parent:
-            self.make_set(item)  # Автоматически создаем множество, если элемент новый
+            self.make_set(item)
             return item
 
         if self.parent[item] == item:
