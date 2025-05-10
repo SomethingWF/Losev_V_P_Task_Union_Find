@@ -42,7 +42,7 @@ def _get_node_positions(dsu_instance, G):
             if child not in pos: 
                 child_x = start_x + i * x_spread_factor
                 pos[child] = (child_x, current_y)
-                position_children(child, child_x, current_y + y_step, x_spread_factor * 0.8, y_step)
+                position_children(child, child_x, current_y + y_step, x_spread_factor * 0.6, y_step)
 
     for root in roots:
         y_step=-0.3

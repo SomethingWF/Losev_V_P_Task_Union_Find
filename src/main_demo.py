@@ -4,12 +4,6 @@ from visualization import visualize_dsu, setup_visualization_figure
 
 def wait_for_click_or_key(fig_to_wait_on):
     """Ожидает нажатия кнопки мыши или клавиши в окне фигуры."""
-    # plt.waitforbuttonpress() сам по себе обрабатывает события,
-    # но мы можем добавить сообщение в консоль.
-    # print("Click on the plot or press a key to continue...")
-    # Если возвращает True - мышь, False - клавиша
-    # Нам не важно, чем именно, главное, чтобы было событие
-    # Проверяем, существует ли фигура и ее менеджер холста
     if fig_to_wait_on and fig_to_wait_on.canvas.manager:
         return plt.waitforbuttonpress()
     else:
@@ -24,8 +18,8 @@ def demo_step_by_step():
     ax = setup_visualization_figure(figsize=(12, 8)) # Получаем оси для рисования
     fig = plt.gcf() # Получаем текущую фигуру для waitforbuttonpress
 
-    print("--- DSU Step-by-Step Demo ---")
-    print("Click on the plot window or press any key to advance to the next step.")
+    print("--- Пошаговое демо СНМ ---")
+    print("Нашмите на демонстрационное окно для породвижения вперед")
 
     elements_to_make = [0, 1, 2, 3, 4, "A", "B"]
 
@@ -36,9 +30,7 @@ def demo_step_by_step():
     for i, elem in enumerate(elements_to_make):
         dsu.make_set(elem)
         visualize_dsu(dsu, ax, f"После make_set({elem}) - шаг {i+1}/{len(elements_to_make)}")
-        if wait_for_click_or_key(fig) is False and i < len(elements_to_make) -1 : # Если нажата клавиша (не мышь) и это не последний шаг
-             print("Key pressed, exiting make_set loop early.") # Пример выхода по клавише
-             # break # Можно раскомментировать для выхода из цикла
+        wait_for_click_or_key(fig)
     
     visualize_dsu(dsu, ax, "Все элементы добавлены и образуют собственные множества")
     wait_for_click_or_key(fig)
@@ -52,9 +44,9 @@ def demo_step_by_step():
         (0, "A", "Union(0, 'A') - слияние множеств с разными типами элементов"),
     ]
 
-    print("\n--- Performing Union Operations ---")
+    print("\n--- Демонстрания метода union ---")
     for u1, u2, title_suffix in unions_to_perform:
-        print(f"Attempting {title_suffix}")
+        print(f"Вызов {title_suffix}")
         
         root1 = dsu.find(u1)
         root2 = dsu.find(u2)
@@ -72,10 +64,10 @@ def demo_step_by_step():
             elif root2 == final_root_u1 and root1 != final_root_u1: 
                  joined_edge_info = (root1, root2)
             visualize_dsu(dsu, ax, f"После {title_suffix}", last_union_pair=joined_edge_info)
-            print(f"{title_suffix}: Joined.")
+            print(f"{title_suffix}: успешно.")
         else:
             visualize_dsu(dsu, ax, f"После {title_suffix} (Уже были в одном множестве)")
-            print(f"{title_suffix}: Already in the same set.")
+            print(f"{title_suffix}: элементы уже находятся в одном множестве")
         wait_for_click_or_key(fig)
         if title_suffix == "Union(0, 2) - слияние двух множеств":
             visualize_dsu(dsu, ax, f"При слиянии множеств одинакового ранга ранг итогового множества увеличился на 1", highlight_find_path=[0])
@@ -83,7 +75,7 @@ def demo_step_by_step():
             wait_for_click_or_key(fig)
 
     # 3. Операции Find с демонстрацией сжатия путей
-    print("\n--- Performing Find Operations (demonstrating path compression) ---")
+    print("\n--- Демонстрация метода find (Эвристика сжатия путей) ---")
     dsu.make_set(5)
     dsu.make_set(6)
     dsu.make_set(7)
@@ -121,7 +113,7 @@ def demo_step_by_step():
     wait_for_click_or_key(fig)
 
     find_element = 7
-    print(f"Finding representative for {find_element} (will show path compression)")
+    print(f"Поиск представиля множества элемента {find_element} (будет произведено сжатие пути)")
     
     parent_before_find = dsu.parent.get(find_element)
     path_to_highlight = []
@@ -138,14 +130,17 @@ def demo_step_by_step():
 
     root_of_7 = dsu.find(find_element)
     
-    print(f"Representative for {find_element} is {root_of_7}.")
-    print(f"Parent of {find_element} before find: {parent_before_find}, after find: {dsu.parent.get(find_element)}")
+    print(f"Представителем множества для {find_element} является {root_of_7}.")
+    print(f"Родитель элемента {find_element} до find: {parent_before_find}, после find: {dsu.parent.get(find_element)}")
     
     final_path_highlight = [find_element, root_of_7] if find_element != root_of_7 else [find_element]
     visualize_dsu(dsu, ax, f"После find({find_element}) - путь был сжат", highlight_find_path=final_path_highlight)
     wait_for_click_or_key(fig)
 
-    print("\nDemo finished. Close the plot window to exit.")
+    visualize_dsu(dsu, ax, f"Итоговок состояние СНМ")
+    wait_for_click_or_key(fig)
+
+    print("\nДемо окончено. Закройте  демострационное окно")
     plt.show() # Показываем финальный график и ждем закрытия окна в блокирующем режиме
 
 if __name__ == "__main__":
